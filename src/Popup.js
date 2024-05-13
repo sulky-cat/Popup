@@ -3,7 +3,7 @@ import Timer from "./Timer.js"
 
 
 export default class Popup {
-   focusEl = [
+   #focusEl = [
       'a[href]',
       'input:not([disabled]):not([type="hidden"]):not([aria-hidden])',
       'button:not([disabled]):not([aria-hidden])',
@@ -21,10 +21,10 @@ export default class Popup {
    bodyLocking = true
    lastFocusEl = false
    youtube = false
-   autoplay = false
 
-   defaultOpt = {
+   #defaultOpt = {
       hash: true,
+      addCustomEvent: true,
 
       transitionClass: 'popup-transition',
       htmlClass: 'popup-show',
@@ -34,10 +34,13 @@ export default class Popup {
 
       attributeWait: 'data-wait',
       attributeNoLock: 'data-save-body-state',
+
+      openAttribute: 'data-popup',
+      closeAttribute: 'data-close',
    }
 
    constructor(opt) {
-      this.opt = { ...this.defaultOpt, ...opt }
+      this.opt = { ...this.#defaultOpt, ...opt }
 
       this.onclick = this.onclick.bind(this)
       this.onKeyDown = this.onKeyDown.bind(this)
@@ -61,8 +64,8 @@ export default class Popup {
     * Удаление событий.
     */
    destroy() {
-      document.body.removeEventListener('click', this.onclick)
-      document.body.removeEventListener('keydown', this.onKeyDown)
+      document.removeEventListener('click', this.onclick)
+      document.removeEventListener('keydown', this.onKeyDown)
       if (this.opt.hash) {
          window.removeEventListener('hashchange', this.onHashOpen)
          window.removeEventListener('load', this.onHashOpen)
@@ -99,9 +102,10 @@ export default class Popup {
          this.#setHash(this.selector)
 
       // CusomEvent
-      this.#generateEvent('Before')
-      document.body.classList.add(this.opt.transitionClass)
+      if (this.opt.addCustomEvent)
+         this.#generateEvent('BeforeOpen')
 
+      document.body.classList.add(this.opt.transitionClass)
       document.documentElement.classList.add(this.opt.htmlClass)
       this.window.classList.add(this.opt.activePopup)
       this.window.setAttribute('aria-hidden', 'false')
@@ -113,7 +117,7 @@ export default class Popup {
       if (this.youtube) {
          try {
             this.placeVideo = this.window.querySelector(this.opt.youtubePlaceSelector)
-            this.placeVideo.appendChild(this.#iframe);
+            this.placeVideo.appendChild(this.#iframe)
          } catch {
             console.error('Не указано место для вставки видео.')
          }
@@ -128,7 +132,8 @@ export default class Popup {
       this.isOpen = true
       this.#focusTrap()
 
-      this.#generateEvent('After')
+      if (this.opt.addCustomEvent)
+         this.#generateEvent('AfterOpen')
    }
    /**
     * Закрытие модального окна.
@@ -136,12 +141,13 @@ export default class Popup {
     * @returns Promise
     */
    async close() {
-      if (this.transition) return
+      if (this.transition || !this.window) return
 
       // CusomEvent
-      this.#generateEvent('Before')
-      document.body.classList.add(this.opt.transitionClass)
+      if (this.opt.addCustomEvent)
+         this.#generateEvent('BeforeClose')
 
+      document.body.classList.add(this.opt.transitionClass)
       this.window.classList.remove(this.opt.activePopup)
       this.window.setAttribute('aria-hidden', 'true')
 
@@ -160,7 +166,6 @@ export default class Popup {
       if (!this.waitClosing)
          this.checkPrevBodyLock = false
 
-
       // YouTube
       if (this.youtube)
          this.placeVideo.innerHTML = ''
@@ -171,8 +176,8 @@ export default class Popup {
 
       this.isOpen = false
 
-
-      this.#generateEvent('After')
+      if (this.opt.addCustomEvent)
+         this.#generateEvent('AfterClose')
    }
    get transition() {
       return document.body.classList.contains(this.opt.transitionClass)
@@ -181,8 +186,8 @@ export default class Popup {
    onclick(e) {
       if (this.transition) return
 
-      const openBtn = e.target.closest('[data-popup]')
-      const closeBtn = e.target.closest('[data-close]')
+      const openBtn = e.target.closest(`[${this.opt.openAttribute}]`)
+      const closeBtn = e.target.closest(`[${this.opt.closeAttribute}]`)
 
       if (closeBtn || this.isOpen && !e.target.closest(`${this.selector} .popup__content`)) {
          this.close()
@@ -190,14 +195,15 @@ export default class Popup {
       }
 
       if (openBtn) {
-         this.waitClosing = openBtn.hasAttribute(this.opt.attributeWait)
-         this.bodyLocking = !openBtn.hasAttribute(this.opt.attributeNoLock)
-         this.youtube = openBtn.dataset.yt
+         this.openBtn = openBtn
+         this.waitClosing = this.openBtn.hasAttribute(this.opt.attributeWait)
+         this.bodyLocking = !this.openBtn.hasAttribute(this.opt.attributeNoLock)
+         this.youtube = this.openBtn.dataset.yt
 
-         if (!openBtn.closest(this.selector))
-            this.lastFocusEl = openBtn
+         if (!this.openBtn.closest(this.selector))
+            this.lastFocusEl = this.openBtn
 
-         this.selector = openBtn.dataset.popup
+         this.selector = this.openBtn.getAttribute(this.opt.openAttribute)
          this.open(this.selector)
 
          return
@@ -226,41 +232,40 @@ export default class Popup {
    }
    onHashOpen(e) {
       let hash = window.location.hash
-      if (!hash) return
+      if (!hash) {
+         this.close()
+         return
+      }
 
       if (hash[1] === '.')
          hash = hash.substring(1)
 
       const attr = `[data-popup="${hash}"]`
       try {
-         const openBtn = document.querySelector(attr)
-         this.#setSettings(openBtn)
+         this.openBtn = document.querySelector(attr)
+         this.#setSettings()
       } catch {
          console.error(`Нет элемента с атрибутом ${attr}`)
       }
       this.open(hash)
-
    }
    get #iframe() {
       const urlVideo = `https://www.youtube.com/embed/${this.youtube}`
       const iframe = document.createElement('iframe')
       iframe.setAttribute('allowfullscreen', '')
-      const autoplay = this.autoplay ? 'autoplay;' : ''
       iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin')
       iframe.setAttribute('title', 'YouTube video player')
-      iframe.setAttribute('allow', `accelerometer;${autoplay}clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share`)
+      iframe.setAttribute('allow', `accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share`)
       iframe.setAttribute('src', urlVideo)
 
       return iframe
    }
    #generateEvent(when) {
-      // CusomEvent
-      const type = this.window.classList.contains(this.opt.activePopup) ? 'Open' : 'Close'
-      const customEvent = new CustomEvent(`on${when}${type}`, { detail: { popup: this }, })
-      document.body.dispatchEvent(customEvent)
+      const customEvent = new CustomEvent(`on${when}`, { detail: { popup: this }, bubbles: true, })
+      this.window.dispatchEvent(customEvent)
    }
    #focusTrap() {
-      const focusable = this.window.querySelectorAll(this.focusEl)
+      const focusable = this.window.querySelectorAll(this.#focusEl)
       focusable[0].focus()
    }
    #setHash(hash) {
@@ -274,7 +279,7 @@ export default class Popup {
       history.pushState('', '', href)
    }
    #focusCatch(e) {
-      const focusArray = Array.from(this.window.querySelectorAll(this.focusEl))
+      const focusArray = Array.from(this.window.querySelectorAll(this.#focusEl))
       const focusedIndex = focusArray.indexOf(document.activeElement)
 
       if (e.shiftKey && focusedIndex === 0) {
@@ -285,9 +290,9 @@ export default class Popup {
          e.preventDefault()
       }
    }
-   #setSettings(openBtn) {
-      this.waitClosing = openBtn.hasAttribute('data-wait')
-      this.bodyLocking = !openBtn.hasAttribute('data-no-body-lock')
-      this.youtube = openBtn.dataset.yt
+   #setSettings() {
+      this.waitClosing = this.openBtn.hasAttribute('data-wait')
+      this.bodyLocking = !this.openBtn.hasAttribute('data-no-body-lock')
+      this.youtube = this.openBtn.dataset.yt
    }
 }

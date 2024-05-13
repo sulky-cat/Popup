@@ -33,13 +33,30 @@
 
       <section id="ex_4" class="section">
          <h2 class="section__title">С сохранением состояния блокировки окна</h2>
-         <button class="lock-button" type="button">Body <span>LOCK</span></button>
+         <button class="lock-button other-btn" type="button">Body <span>LOCK</span></button>
          <button data-save-body-state data-popup="#popup_ex_4" type="button">Открыть попап</button>
       </section>
 
       <section id="ex_5" class="section">
          <h2 class="section__title">Вставка видео из ютуба</h2>
-         <button data-yt="jfKfPfyJRdk" data-popup="#popup_ex_5" type="button">Открыть попап</button>
+         <button data-yt="jfKfPfyJRdk" data-popup="#popup_ex_5_1" type="button">Открыть видео</button>
+         <button data-yt="jfKfPfyJRdk" data-popup="#popup_ex_5_2" type="button">Открыть видео с автоплеем</button>
+      </section>
+
+      <section id="ex_6" class="section">
+         <h2 class="section__title">События (в консоли)</h2>
+         <button data-popup="#popup_ex_6" type="button">Открыть попап</button>
+      </section>
+
+      <section id="ex_7" class="section">
+         <h2 class="section__title">Открытие по хэшу</h2>
+         <a href="#.popup">Ссылка</a>
+      </section>
+
+      <section id="ex_8" class="section">
+         <h2 class="section__title">init(), destroy()</h2>
+         <button class="init other-btn" type="button">init</button>
+         <button class="destroy other-btn" type="button">destroy</button>
       </section>
 
    </div>
@@ -109,12 +126,28 @@
          </div>
       </div>
    </div>
-   <div id="popup_ex_5" aria-hidden="true" class="popup">
+   <div id="popup_ex_5_1" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="yt" data-yt-place></div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_5_2" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="yt" data-yt-place></div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_6" aria-hidden="true" class="popup">
       <div class="popup__wrapper">
          <div class="popup__content">
             <button data-close type="button" class="popup__close"></button>
             <div class="popup__text">
-               <div class="yt" data-yt-place></div>
+               <p>С событием</p>
             </div>
          </div>
       </div>

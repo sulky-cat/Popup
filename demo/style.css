@@ -45,7 +45,8 @@ button {
    border: 1px solid #000;
 }
 /* =========== */
-[data-popup] {
+[data-popup],
+[data-second-popup] {
    padding: 10px 20px;
    border-radius: 4px;
    background-color: var(--accentColor);
@@ -57,22 +58,31 @@ button {
 [data-popup]:hover {
    background-color: #365aa7;
 }
+.popup__content {
+   min-height: 200px;
+}
+.popup__text {
+   font-size: 24px;
+   text-align: center;
+}
 .popup__text p:not(:last-child) {
    margin-bottom: 20px;
 }
 
-.lock-button {
+.other-btn {
    display: block;
    padding: 10px;
    border-radius: 4px;
    width: 100%;
    font-size: 18px;
    font-weight: 700;
-   margin-bottom: 20px;
 
    transition: background-color 0.2s ease-in-out 0s;
 }
-.lock-button:hover {
+.other-btn:not(:last-child) {
+   margin-bottom: 20px;
+}
+.other-btn:hover {
    background-color: #e1e1e1;
 }
 .yt iframe {
