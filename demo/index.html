@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="../src/popup.css">
+   <title>Popup</title>
+</head>
+
+<body>
+   <div>
+      <h1 class="title">Примеры</h1>
+
+      <section id="ex_1" class="section">
+         <h2 class="section__title">Обычное поведение</h2>
+         <button data-popup="#popup_ex_1" type="button">Открыть по id</button>
+         <button data-popup=".popup" type="button">Открыть по классу</button>
+      </section>
+
+      <section id="ex_2" class="section">
+         <h2 class="section__title">Попап из попапа</h2>
+         <button data-popup="#popup_ex_2_1" type="button">Открыть первый попап</button>
+         <button data-popup="#popup_ex_2_2" type="button">Открыть второй попап</button>
+      </section>
+
+      <section id="ex_3" class="section">
+         <h2 class="section__title">Попап из попапа (с ожиданием закрытия)</h2>
+         <button data-popup="#popup_ex_3_1" type="button">Открыть первый попап</button>
+         <button data-popup="#popup_ex_3_2" type="button">Открыть второй попап</button>
+      </section>
+
+      <section id="ex_4" class="section">
+         <h2 class="section__title">С сохранением состояния блокировки окна</h2>
+         <button class="lock-button" type="button">Body <span>LOCK</span></button>
+         <button data-save-body-state data-popup="#popup_ex_4" type="button">Открыть попап</button>
+      </section>
+
+      <section id="ex_5" class="section">
+         <h2 class="section__title">Вставка видео из ютуба</h2>
+         <button data-yt="jfKfPfyJRdk" data-popup="#popup_ex_5" type="button">Открыть попап</button>
+      </section>
+
+   </div>
+
+   <!-- Popaps -->
+   <div id="popup_ex_1" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <p>Обычное поведение</p>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_2_1" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <p>Первый попап</p>
+               <button data-popup="#popup_ex_2_2" type="button">Открыть второй попап</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_2_2" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <p>Второй попап</p>
+               <button data-popup="#popup_ex_2_1" type="button">Открыть первый попап</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_3_1" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <p>Первый попап (используется атрибут data-wait)</p>
+               <button data-wait data-popup="#popup_ex_3_2" type="button">Открыть второй попап</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_3_2" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <p>Второй попап (используется атрибут data-wait)</p>
+               <button data-wait data-popup="#popup_ex_3_1" type="button">Открыть первый попап</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_4" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <p>Сохранение состояния</p>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div id="popup_ex_5" aria-hidden="true" class="popup">
+      <div class="popup__wrapper">
+         <div class="popup__content">
+            <button data-close type="button" class="popup__close"></button>
+            <div class="popup__text">
+               <div class="yt" data-yt-place></div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <script type="module" src="script.js"></script>
+</body>
+
+</html>
