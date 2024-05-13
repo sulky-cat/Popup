@@ -50,9 +50,12 @@ import Timer from "./Timer.js"
 ```
 
 ## HTML
+Кнопка вызова:
 ```html
 <button data-popup="#popup" data-yt="код_видео" type="button">Открыть</button>
-
+```
+Модальное окно:
+```html
 <div id="popup" aria-hidden="true" class="popup">
    <div class="popup__wrapper">
       <div class="popup__content">
@@ -66,7 +69,7 @@ import Timer from "./Timer.js"
       </div>
    </div>
 </div>
-``` 
+```
 
 Атрибуты для кнопки вызова: 
 * `data-popup` - атрибуту указывается селектор модального окна. Если селекторы совпадают - вызывается первое найденное модальное окно;
