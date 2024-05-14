@@ -1,4 +1,4 @@
-# Название
+# Popup
 
 [Демо страница](https://sulky-cat.github.io/Popup/demo/)
 
