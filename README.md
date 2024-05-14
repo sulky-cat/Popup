@@ -40,7 +40,7 @@
 *HTML*
 ```html
 <script type="module" src="script.js">
-   import Spoller from "Tab.js"
+   import Popup from "Popup.js"
 </script>
 ```
 *JS (Popup.js)*
