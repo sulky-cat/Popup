@@ -30,9 +30,7 @@ pop.addEventListener('onAfterClose', (e) => {
 // Пример 8
 document.querySelector('.init').onclick = () => {
    popup.init()
-   popupEvent.init()
 }
 document.querySelector('.destroy').onclick = () => {
    popup.destroy()
-   popupEvent.destroy()
 }
