@@ -264,7 +264,7 @@ export default class Popup {
       return iframe
    }
    #generateEvent(when) {
-      const customEvent = new CustomEvent(`on${when}`, { detail: { popup: this }, bubbles: true, })
+      const customEvent = new CustomEvent(`on${when}`, { detail: this, bubbles: true, })
       this.window.dispatchEvent(customEvent)
    }
    #focusTrap() {

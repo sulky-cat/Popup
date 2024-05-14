@@ -15,16 +15,16 @@ document.querySelector('.lock-button').onclick = function () {
 // Пример 6
 const pop = document.querySelector('#popup_ex_6')
 pop.addEventListener('onBeforeOpen', (e) => {
-   console.log('onBeforeOpen', e.detail.popup);
+   console.log('onBeforeOpen', e.detail);
 })
 pop.addEventListener('onAfterOpen', (e) => {
-   console.log('onAfterOpen', e.detail.popup);
+   console.log('onAfterOpen', e.detail);
 })
 pop.addEventListener('onBeforeClose', (e) => {
-   console.log('onBeforeClose', e.detail.popup);
+   console.log('onBeforeClose', e.detail);
 })
 pop.addEventListener('onAfterClose', (e) => {
-   console.log('onAfterClose', e.detail.popup);
+   console.log('onAfterClose', e.detail);
 })
 
 // Пример 8
