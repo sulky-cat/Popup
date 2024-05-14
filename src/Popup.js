@@ -38,7 +38,10 @@ export default class Popup {
       openAttribute: 'data-popup',
       closeAttribute: 'data-close',
    }
-
+   /**
+    * Конструктор класса
+    * @param {Object} opt Объект настроек класса.
+    */
    constructor(opt) {
       this.opt = { ...this.#defaultOpt, ...opt }
 
