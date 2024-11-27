@@ -1,6 +1,5 @@
-import BodyLock from "./BodyLock.js"
-import Timer from "./Timer.js"
-
+import BodyLock from './BodyLock.js'
+import Timer from './Timer.js'
 
 export default class Popup {
    #focusEl = [
@@ -14,7 +13,7 @@ export default class Popup {
       'object',
       'embed',
       '[contenteditable]',
-      '[tabindex]:not([tabindex^="-"])'
+      '[tabindex]:not([tabindex^="-"])',
    ]
    // HTML options
    waitClosing = false
@@ -47,8 +46,7 @@ export default class Popup {
 
       this.onclick = this.onclick.bind(this)
       this.onKeyDown = this.onKeyDown.bind(this)
-      if (this.opt.hash)
-         this.onHashOpen = this.onHashOpen.bind(this)
+      if (this.opt.hash) this.onHashOpen = this.onHashOpen.bind(this)
 
       this.init()
    }
@@ -76,14 +74,16 @@ export default class Popup {
    }
    /**
     * Открытие модального окна.
-    * 
+    *
     * @param {String} selector селектор, по которому откроется модальное окно.
     * @returns                 Promise.
     */
    async open(selector) {
       // Проверка на существование необходимого модального окна
       if (!document.querySelector(selector))
-         throw new Error(`Не существует модального окна с селектолром "${selector}"`)
+         throw new Error(
+            `Не существует модального окна с селектолром "${selector}"`
+         )
       // Проверка на то, чтобы не шло открытие/закрытие
       if (this.transition) return
 
@@ -94,32 +94,30 @@ export default class Popup {
          if (this.waitClosing) {
             await this.close()
             this.checkPrevBodyLock = false
-         } else
-            this.close()
+         } else this.close()
       }
 
       this.window = document.querySelector(selector)
       this.selector = selector
 
-      if (this.opt.hash)
-         this.#setHash(this.selector)
+      if (this.opt.hash) this.#setHash(this.selector)
 
       // CusomEvent
-      if (this.opt.addCustomEvent)
-         this.#generateEvent('BeforeOpen')
+      if (this.opt.addCustomEvent) this.#generateEvent('BeforeOpen')
 
       document.body.classList.add(this.opt.transitionClass)
       document.documentElement.classList.add(this.opt.htmlClass)
       this.window.classList.add(this.opt.activePopup)
       this.window.setAttribute('aria-hidden', 'false')
 
-      if (this.bodyLocking)
-         BodyLock.on()
+      if (this.bodyLocking) BodyLock.on()
 
       // Past YouTube video
       if (this.youtube) {
          try {
-            this.placeVideo = this.window.querySelector(this.opt.youtubePlaceSelector)
+            this.placeVideo = this.window.querySelector(
+               this.opt.youtubePlaceSelector
+            )
             this.placeVideo.appendChild(this.#iframe)
          } catch {
             console.error('Не указано место для вставки видео.')
@@ -127,7 +125,9 @@ export default class Popup {
       }
 
       // Открытие
-      const duration = parseFloat(window.getComputedStyle(this.window).transitionDuration) * 1000
+      const duration =
+         parseFloat(window.getComputedStyle(this.window).transitionDuration) *
+         1000
       await Timer.start({ duration })
 
       document.body.classList.remove(this.opt.transitionClass)
@@ -135,26 +135,25 @@ export default class Popup {
       this.isOpen = true
       this.#focusTrap()
 
-      if (this.opt.addCustomEvent)
-         this.#generateEvent('AfterOpen')
+      if (this.opt.addCustomEvent) this.#generateEvent('AfterOpen')
    }
    /**
     * Закрытие модального окна.
-    * 
+    *
     * @returns Promise
     */
    async close() {
       if (this.transition || !this.window) return
 
       // CusomEvent
-      if (this.opt.addCustomEvent)
-         this.#generateEvent('BeforeClose')
+      if (this.opt.addCustomEvent) this.#generateEvent('BeforeClose')
 
       document.body.classList.add(this.opt.transitionClass)
       this.window.classList.remove(this.opt.activePopup)
-      this.window.setAttribute('aria-hidden', 'true')
 
-      const duration = parseFloat(window.getComputedStyle(this.window).transitionDuration) * 1000
+      const duration =
+         parseFloat(window.getComputedStyle(this.window).transitionDuration) *
+         1000
       await Timer.start({ duration })
 
       if (!this.checkPrevBodyLock) {
@@ -162,37 +161,37 @@ export default class Popup {
          document.documentElement.classList.remove(this.opt.htmlClass)
          document.body.classList.remove(this.opt.transitionClass)
 
-         if (this.bodyLocking)
-            BodyLock.off()
+         if (this.bodyLocking) BodyLock.off()
       }
 
-      if (!this.waitClosing)
-         this.checkPrevBodyLock = false
+      if (!this.waitClosing) this.checkPrevBodyLock = false
 
       // YouTube
-      if (this.youtube)
-         this.placeVideo.innerHTML = ''
+      if (this.youtube) this.placeVideo.innerHTML = ''
 
       // Возврат фокуса
-      if (this.lastFocusEl)
-         this.lastFocusEl.focus()
+      if (this.lastFocusEl) this.lastFocusEl.focus()
+
+      this.window.setAttribute('aria-hidden', 'true')
 
       this.isOpen = false
 
-      if (this.opt.addCustomEvent)
-         this.#generateEvent('AfterClose')
+      if (this.opt.addCustomEvent) this.#generateEvent('AfterClose')
    }
    get transition() {
       return document.body.classList.contains(this.opt.transitionClass)
    }
-   // События для работы 
+   // События для работы
    onclick(e) {
       if (this.transition) return
 
       const openBtn = e.target.closest(`[${this.opt.openAttribute}]`)
       const closeBtn = e.target.closest(`[${this.opt.closeAttribute}]`)
 
-      if (closeBtn || this.isOpen && !e.target.closest(`${this.selector} .popup__content`)) {
+      if (
+         closeBtn ||
+         (this.isOpen && !e.target.closest(`${this.selector} .popup__content`))
+      ) {
          this.close()
          return
       }
@@ -240,8 +239,7 @@ export default class Popup {
          return
       }
 
-      if (hash[1] === '.')
-         hash = hash.substring(1)
+      if (hash[1] === '.') hash = hash.substring(1)
 
       const attr = `[data-popup="${hash}"]`
       try {
@@ -258,13 +256,19 @@ export default class Popup {
       iframe.setAttribute('allowfullscreen', '')
       iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin')
       iframe.setAttribute('title', 'YouTube video player')
-      iframe.setAttribute('allow', `accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share`)
+      iframe.setAttribute(
+         'allow',
+         `accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share`
+      )
       iframe.setAttribute('src', urlVideo)
 
       return iframe
    }
    #generateEvent(when) {
-      const customEvent = new CustomEvent(`on${when}`, { detail: this, bubbles: true, })
+      const customEvent = new CustomEvent(`on${when}`, {
+         detail: this,
+         bubbles: true,
+      })
       this.window.dispatchEvent(customEvent)
    }
    #focusTrap() {
@@ -272,8 +276,7 @@ export default class Popup {
       focusable[0].focus()
    }
    #setHash(hash) {
-      if (hash[0] !== '#')
-         hash = `#${hash}`
+      if (hash[0] !== '#') hash = `#${hash}`
 
       history.pushState('', '', hash)
    }
